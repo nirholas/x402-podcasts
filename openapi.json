@@ -1,0 +1,357 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "x402-podcasts",
+    "version": "0.1.0",
+    "summary": "Podcast search and episode intel over the Podcast Index API, paid per query.",
+    "description": "Search ~4M podcast feeds and resolve episodes down to their enclosure (audio) URL. Paid routes speak x402: an unpaid request returns 402 with a dual-rail `accepts` array (USDC on Base and USDC on Solana) and the client picks the rail. Upstream is env-gated — with `PODCAST_INDEX_KEY`/`PODCAST_INDEX_SECRET` set, responses are live and carry `source: \"podcastindex-live\"`; without them, deterministic fixtures carry `source: \"fixture\"`.",
+    "contact": { "name": "nirholas", "email": "nichxbt@gmail.com" },
+    "license": { "name": "Apache-2.0", "identifier": "Apache-2.0" }
+  },
+  "servers": [{ "url": "http://localhost:4021", "description": "local self-host" }],
+  "externalDocs": {
+    "description": "Docs and tutorial",
+    "url": "https://nirholas.github.io/x402-podcasts/"
+  },
+  "paths": {
+    "/": {
+      "get": {
+        "operationId": "getServiceCard",
+        "summary": "Service card (free)",
+        "description": "Prices, rails, and which data source this deployment is currently serving.",
+        "responses": {
+          "200": {
+            "description": "Service metadata",
+            "content": { "application/json": { "schema": { "type": "object" } } }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "operationId": "getHealth",
+        "summary": "Liveness probe (free)",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": { "type": "boolean" },
+                    "uptime": { "type": "number" },
+                    "source": { "$ref": "#/components/schemas/Source" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/.well-known/x402": {
+      "get": {
+        "operationId": "getX402Manifest",
+        "summary": "x402 resource manifest (free)",
+        "responses": {
+          "200": {
+            "description": "Machine-readable listing of paid resources, prices and rails.",
+            "content": { "application/json": { "schema": { "type": "object" } } }
+          }
+        }
+      }
+    },
+    "/skill.md": {
+      "get": {
+        "operationId": "getSkillFile",
+        "summary": "Agent-facing skill file (free)",
+        "responses": {
+          "200": {
+            "description": "skill.md",
+            "content": { "text/markdown": { "schema": { "type": "string" } } }
+          }
+        }
+      }
+    },
+    "/search": {
+      "get": {
+        "operationId": "searchPodcasts",
+        "summary": "Search shows, with each show's latest episode",
+        "description": "Price $0.002 in USDC. Pay on Base or Solana — the 402 lists both rails.",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "description": "Free-text search over title, author and description.",
+            "schema": { "type": "string", "minLength": 1, "maxLength": 200, "examples": ["podcasting 2.0"] }
+          },
+          {
+            "name": "max",
+            "in": "query",
+            "required": false,
+            "description": "Number of shows to return. Clamped to 1–20.",
+            "schema": { "type": "integer", "minimum": 1, "maximum": 20, "default": 5 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The purchased result set.",
+            "headers": {
+              "X-PAYMENT-RESPONSE": {
+                "description": "Base64 JSON settlement receipt.",
+                "schema": { "type": "string" }
+              }
+            },
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/SearchResult" } }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "402": { "$ref": "#/components/responses/PaymentRequired" },
+          "502": { "$ref": "#/components/responses/UpstreamError" },
+          "504": { "$ref": "#/components/responses/UpstreamError" }
+        }
+      }
+    },
+    "/episode/{id}": {
+      "get": {
+        "operationId": "getEpisode",
+        "summary": "Full episode record including the enclosure (audio) URL",
+        "description": "Price $0.002 in USDC. Pay on Base or Solana — the 402 lists both rails.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Podcast Index episode id (the `episodeId` returned by /search).",
+            "schema": { "type": "integer", "minimum": 1, "examples": [16795090960] }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The purchased episode record.",
+            "headers": {
+              "X-PAYMENT-RESPONSE": {
+                "description": "Base64 JSON settlement receipt.",
+                "schema": { "type": "string" }
+              }
+            },
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/EpisodeResult" } }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "402": { "$ref": "#/components/responses/PaymentRequired" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "502": { "$ref": "#/components/responses/UpstreamError" },
+          "504": { "$ref": "#/components/responses/UpstreamError" }
+        }
+      }
+    }
+  },
+  "components": {
+    "responses": {
+      "PaymentRequired": {
+        "description": "Payment required. The `accepts` array lists both rails — USDC on Base and USDC on Solana. Sign one, base64 it into `X-PAYMENT`, retry.",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/PaymentRequiredBody" },
+            "example": {
+              "x402Version": 1,
+              "error": "X-PAYMENT header is required",
+              "accepts": [
+                {
+                  "scheme": "exact",
+                  "network": "base-sepolia",
+                  "maxAmountRequired": "2000",
+                  "resource": "http://localhost:4021/search",
+                  "description": "Podcast search: matching shows with metadata and each one's latest episode",
+                  "mimeType": "application/json",
+                  "payTo": "0x40252CFDF8B20Ed757D61ff157719F33Ec332402",
+                  "maxTimeoutSeconds": 60,
+                  "asset": "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+                  "extra": { "name": "USDC", "version": "2" }
+                },
+                {
+                  "scheme": "exact",
+                  "network": "solana",
+                  "maxAmountRequired": "2000",
+                  "resource": "http://localhost:4021/search",
+                  "description": "Podcast search: matching shows with metadata and each one's latest episode",
+                  "mimeType": "application/json",
+                  "payTo": "WwwuGbqHrwF5RG89KhUbmRWEvjnRH9k5kVM5p7T3WwW",
+                  "maxTimeoutSeconds": 60,
+                  "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                  "extra": {
+                    "name": "USD Coin",
+                    "decimals": 6,
+                    "feePayer": "2wKupLR9q6wXYppw8Gr2NvWxKBUqm4PPJKkQfoxHDBg4"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "BadRequest": {
+        "description": "Malformed input.",
+        "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+      },
+      "NotFound": {
+        "description": "No such episode.",
+        "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+      },
+      "UpstreamError": {
+        "description": "Podcast Index was unreachable, rate limited, or rejected the credentials.",
+        "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+      }
+    },
+    "schemas": {
+      "Source": {
+        "type": "string",
+        "enum": ["podcastindex-live", "fixture"],
+        "description": "Where the data in this response came from. `fixture` means the deployment has no Podcast Index credentials — do not present it as a real search result."
+      },
+      "Error": {
+        "type": "object",
+        "required": ["error"],
+        "properties": {
+          "error": { "type": "string" },
+          "message": { "type": "string" }
+        }
+      },
+      "PaymentRequirements": {
+        "type": "object",
+        "description": "One accepted way to pay for this resource (one rail).",
+        "required": [
+          "scheme",
+          "network",
+          "maxAmountRequired",
+          "resource",
+          "description",
+          "mimeType",
+          "payTo",
+          "maxTimeoutSeconds",
+          "asset"
+        ],
+        "properties": {
+          "scheme": { "type": "string", "enum": ["exact"] },
+          "network": {
+            "type": "string",
+            "enum": ["base", "base-sepolia", "solana", "solana-devnet"]
+          },
+          "maxAmountRequired": {
+            "type": "string",
+            "description": "Amount in asset base units (USDC has 6 decimals)."
+          },
+          "resource": { "type": "string", "format": "uri" },
+          "description": { "type": "string" },
+          "mimeType": { "type": "string" },
+          "payTo": { "type": "string" },
+          "maxTimeoutSeconds": { "type": "integer" },
+          "asset": { "type": "string", "description": "USDC contract address or SPL mint." },
+          "extra": { "type": "object" }
+        }
+      },
+      "PaymentRequiredBody": {
+        "type": "object",
+        "required": ["x402Version", "accepts"],
+        "properties": {
+          "x402Version": { "type": "integer", "enum": [1] },
+          "error": { "type": "string" },
+          "accepts": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "$ref": "#/components/schemas/PaymentRequirements" }
+          }
+        }
+      },
+      "Episode": {
+        "type": "object",
+        "required": ["episodeId", "title", "transcripts"],
+        "properties": {
+          "episodeId": { "type": "integer" },
+          "feedId": { "type": ["integer", "null"] },
+          "feedTitle": { "type": ["string", "null"] },
+          "title": { "type": "string" },
+          "description": { "type": ["string", "null"] },
+          "datePublished": { "type": ["string", "null"], "format": "date-time" },
+          "durationSeconds": { "type": ["integer", "null"] },
+          "enclosureUrl": {
+            "type": ["string", "null"],
+            "format": "uri",
+            "description": "The audio file itself."
+          },
+          "enclosureType": { "type": ["string", "null"] },
+          "enclosureLength": { "type": ["integer", "null"], "description": "Bytes." },
+          "episodeNumber": { "type": ["integer", "null"] },
+          "season": { "type": ["integer", "null"] },
+          "explicit": { "type": "boolean" },
+          "image": { "type": ["string", "null"] },
+          "link": { "type": ["string", "null"] },
+          "transcripts": {
+            "type": "array",
+            "description": "Podcasting 2.0 <podcast:transcript> entries, when the feed publishes them.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "url": { "type": "string", "format": "uri" },
+                "type": { "type": "string" }
+              }
+            }
+          },
+          "guid": { "type": ["string", "null"] }
+        }
+      },
+      "Show": {
+        "type": "object",
+        "required": ["feedId", "title", "categories", "explicit", "hasValueBlock"],
+        "properties": {
+          "feedId": { "type": "integer" },
+          "title": { "type": "string" },
+          "author": { "type": ["string", "null"] },
+          "description": { "type": ["string", "null"] },
+          "url": { "type": ["string", "null"], "description": "RSS feed URL." },
+          "link": { "type": ["string", "null"], "description": "Show homepage." },
+          "image": { "type": ["string", "null"] },
+          "language": { "type": ["string", "null"] },
+          "categories": { "type": "array", "items": { "type": "string" } },
+          "episodeCount": { "type": ["integer", "null"] },
+          "lastUpdate": { "type": ["string", "null"], "format": "date-time" },
+          "explicit": { "type": "boolean" },
+          "hasValueBlock": {
+            "type": "boolean",
+            "description": "The feed publishes a Podcasting 2.0 <podcast:value> block — the show accepts streaming micropayments."
+          },
+          "latestEpisode": {
+            "oneOf": [{ "$ref": "#/components/schemas/Episode" }, { "type": "null" }]
+          }
+        }
+      },
+      "SearchResult": {
+        "type": "object",
+        "required": ["query", "source", "count", "shows", "searchedAt"],
+        "properties": {
+          "query": { "type": "string" },
+          "source": { "$ref": "#/components/schemas/Source" },
+          "count": { "type": "integer" },
+          "shows": { "type": "array", "items": { "$ref": "#/components/schemas/Show" } },
+          "searchedAt": { "type": "string", "format": "date-time" },
+          "receipt": { "type": ["object", "null"] }
+        }
+      },
+      "EpisodeResult": {
+        "type": "object",
+        "required": ["source", "episode", "fetchedAt"],
+        "properties": {
+          "source": { "$ref": "#/components/schemas/Source" },
+          "episode": { "$ref": "#/components/schemas/Episode" },
+          "fetchedAt": { "type": "string", "format": "date-time" },
+          "receipt": { "type": ["object", "null"] }
+        }
+      }
+    }
+  }
+}

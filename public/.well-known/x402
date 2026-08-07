@@ -1,0 +1,163 @@
+{
+  "x402Version": 1,
+  "name": "x402-podcasts",
+  "description": "Podcast search and episode intel over the Podcast Index API, per query. Pay in USDC on Base or Solana; your client picks the rail.",
+  "homepage": "https://nirholas.github.io/x402-podcasts/",
+  "skill": "/skill.md",
+  "openapi": "/openapi.json",
+  "contact": "nichxbt@gmail.com",
+  "upstream": {
+    "name": "Podcast Index",
+    "url": "https://podcastindex.org",
+    "auth": "free key, env-gated",
+    "note": "Responses carry source: 'podcastindex-live' when PODCAST_INDEX_KEY/SECRET are set, otherwise source: 'fixture'."
+  },
+  "facilitator": {
+    "evm": "https://x402.org/facilitator",
+    "solana": "https://facilitator.payai.network"
+  },
+  "rails": [
+    {
+      "rail": "evm",
+      "network": "base-sepolia",
+      "asset": "USDC",
+      "assetAddress": "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+      "payTo": "0x40252CFDF8B20Ed757D61ff157719F33Ec332402"
+    },
+    {
+      "rail": "solana",
+      "network": "solana",
+      "asset": "USDC",
+      "assetAddress": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "payTo": "WwwuGbqHrwF5RG89KhUbmRWEvjnRH9k5kVM5p7T3WwW"
+    }
+  ],
+  "resources": [
+    {
+      "resource": "GET /search",
+      "description": "Search podcast shows by term; each result carries the show's newest episode, including its enclosure (audio) URL",
+      "price": "$0.002",
+      "asset": "USDC",
+      "networks": ["base-sepolia", "base", "solana", "solana-devnet"],
+      "accepts": [
+        {
+          "scheme": "exact",
+          "network": "base-sepolia",
+          "asset": "USDC",
+          "payTo": "0x40252CFDF8B20Ed757D61ff157719F33Ec332402",
+          "maxAmountRequired": "2000"
+        },
+        {
+          "scheme": "exact",
+          "network": "solana",
+          "asset": "USDC",
+          "payTo": "WwwuGbqHrwF5RG89KhUbmRWEvjnRH9k5kVM5p7T3WwW",
+          "maxAmountRequired": "2000"
+        }
+      ],
+      "inputSchema": {
+        "type": "object",
+        "required": ["q"],
+        "properties": {
+          "q": { "type": "string", "minLength": 1, "maxLength": 200, "description": "search term" },
+          "max": { "type": "integer", "minimum": 1, "maximum": 20, "default": 5 }
+        }
+      },
+      "outputSchema": {
+        "type": "object",
+        "required": ["query", "source", "count", "shows", "searchedAt"],
+        "properties": {
+          "query": { "type": "string" },
+          "source": { "type": "string", "enum": ["podcastindex-live", "fixture"] },
+          "count": { "type": "integer" },
+          "shows": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "feedId": { "type": "integer" },
+                "title": { "type": "string" },
+                "author": { "type": ["string", "null"] },
+                "description": { "type": ["string", "null"] },
+                "url": { "type": ["string", "null"] },
+                "link": { "type": ["string", "null"] },
+                "image": { "type": ["string", "null"] },
+                "language": { "type": ["string", "null"] },
+                "categories": { "type": "array", "items": { "type": "string" } },
+                "episodeCount": { "type": ["integer", "null"] },
+                "lastUpdate": { "type": ["string", "null"], "format": "date-time" },
+                "explicit": { "type": "boolean" },
+                "hasValueBlock": { "type": "boolean" },
+                "latestEpisode": { "type": ["object", "null"] }
+              }
+            }
+          },
+          "searchedAt": { "type": "string", "format": "date-time" }
+        }
+      }
+    },
+    {
+      "resource": "GET /episode/:id",
+      "description": "Full episode record by Podcast Index episode id: enclosure (audio) URL, duration, transcripts, feed context",
+      "price": "$0.002",
+      "asset": "USDC",
+      "networks": ["base-sepolia", "base", "solana", "solana-devnet"],
+      "accepts": [
+        {
+          "scheme": "exact",
+          "network": "base-sepolia",
+          "asset": "USDC",
+          "payTo": "0x40252CFDF8B20Ed757D61ff157719F33Ec332402",
+          "maxAmountRequired": "2000"
+        },
+        {
+          "scheme": "exact",
+          "network": "solana",
+          "asset": "USDC",
+          "payTo": "WwwuGbqHrwF5RG89KhUbmRWEvjnRH9k5kVM5p7T3WwW",
+          "maxAmountRequired": "2000"
+        }
+      ],
+      "outputSchema": {
+        "type": "object",
+        "required": ["source", "episode", "fetchedAt"],
+        "properties": {
+          "source": { "type": "string", "enum": ["podcastindex-live", "fixture"] },
+          "episode": {
+            "type": "object",
+            "required": ["episodeId", "title"],
+            "properties": {
+              "episodeId": { "type": "integer" },
+              "feedId": { "type": ["integer", "null"] },
+              "feedTitle": { "type": ["string", "null"] },
+              "title": { "type": "string" },
+              "description": { "type": ["string", "null"] },
+              "datePublished": { "type": ["string", "null"], "format": "date-time" },
+              "durationSeconds": { "type": ["integer", "null"] },
+              "enclosureUrl": { "type": ["string", "null"], "format": "uri" },
+              "enclosureType": { "type": ["string", "null"] },
+              "enclosureLength": { "type": ["integer", "null"] },
+              "episodeNumber": { "type": ["integer", "null"] },
+              "season": { "type": ["integer", "null"] },
+              "explicit": { "type": "boolean" },
+              "image": { "type": ["string", "null"] },
+              "link": { "type": ["string", "null"] },
+              "transcripts": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "url": { "type": "string", "format": "uri" },
+                    "type": { "type": "string" }
+                  }
+                }
+              },
+              "guid": { "type": ["string", "null"] }
+            }
+          },
+          "fetchedAt": { "type": "string", "format": "date-time" }
+        }
+      }
+    }
+  ]
+}

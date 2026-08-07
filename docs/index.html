@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>x402-podcasts — podcast search that returns audio URLs</title>
+<meta name="description" content="Search ~4M podcast feeds over the Podcast Index and resolve episodes to their audio and transcript URLs. Paid per query in USDC over x402 on Base or Solana.">
+<style>
+:root{
+  --accent:#0052ff;--accent-2:#14f195;--bg:#ffffff;--fg:#0a0c10;--muted:#57606a;
+  --card:#f6f8fa;--border:#d0d7de;--code-bg:#0d1117;--code-fg:#e6edf3;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#0d1117;--fg:#e6edf3;--muted:#9198a1;--card:#161b22;--border:#30363d}
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--fg);line-height:1.6;-webkit-text-size-adjust:100%}
+.wrap{max-width:900px;margin:0 auto;padding:0 20px}
+header{padding:72px 0 40px;text-align:center}
+.badge{display:inline-block;font-size:13px;font-weight:600;color:var(--accent);border:1px solid var(--accent);border-radius:999px;padding:2px 12px;margin-bottom:16px}
+h1{font-size:44px;letter-spacing:-1px;margin-bottom:12px}
+@media (max-width:560px){h1{font-size:32px}}
+.tagline{font-size:19px;color:var(--muted);max-width:660px;margin:0 auto 24px}
+.install{display:inline-block;max-width:100%;overflow-x:auto;background:var(--code-bg);color:var(--code-fg);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;padding:10px 18px;border-radius:8px;margin-bottom:24px;white-space:nowrap}
+.btns a{display:inline-block;margin:4px 6px;padding:10px 20px;border-radius:8px;font-weight:600;text-decoration:none;font-size:15px}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-ghost{border:1px solid var(--border);color:var(--fg)}
+section{padding:32px 0}
+h2{font-size:26px;margin-bottom:14px;letter-spacing:-.5px}
+h3{font-size:18px;margin:20px 0 8px}
+p{margin-bottom:12px}
+ul{margin:0 0 12px 22px}
+li{margin-bottom:6px}
+.tablewrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:15px;min-width:520px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+th{color:var(--muted);font-size:13px;text-transform:uppercase;letter-spacing:.05em}
+td code,p code,li code,th code{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-size:13px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.price{color:var(--accent);font-weight:700;white-space:nowrap}
+pre{background:var(--code-bg);color:var(--code-fg);border-radius:10px;padding:18px;overflow-x:auto;font-size:13.5px;line-height:1.55;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.rails{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.rail{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+.rail b{display:block;font-size:16px;margin-bottom:6px}
+.rail .k{color:var(--muted);font-size:13px}
+.rail code{font-size:12px;word-break:break-all}
+figure{margin:0}
+figcaption{color:var(--muted);font-size:13px;text-align:center;margin-top:8px}
+svg{max-width:100%;height:auto;display:block;margin:0 auto}
+footer{padding:40px 0;color:var(--muted);font-size:14px;text-align:center;border-top:1px solid var(--border);margin-top:48px}
+footer a{color:var(--accent);text-decoration:none}
+a{color:var(--accent)}
+</style>
+</head>
+<body>
+<header class="wrap">
+  <div class="badge">x402 · USDC on Base + Solana</div>
+  <h1>x402-podcasts</h1>
+  <p class="tagline">Search four million podcast feeds and get back a <b>playable audio URL</b> — and, when the feed publishes one, a transcript you can read instead. <b>$0.002</b> per query, in USDC, on Base or Solana.</p>
+  <div class="install">git clone https://github.com/nirholas/x402-podcasts &amp;&amp; cd x402-podcasts &amp;&amp; npm install &amp;&amp; npm run dev</div>
+  <div class="btns">
+    <a class="btn-primary" href="https://github.com/nirholas/x402-podcasts">GitHub</a>
+    <a class="btn-ghost" href="tutorial.md">Tutorial</a>
+    <a class="btn-ghost" href="api.md">API Reference</a>
+    <a class="btn-ghost" href="agents.md">For AI Agents</a>
+  </div>
+</header>
+
+<section class="wrap">
+  <h2>Pricing</h2>
+  <div class="tablewrap"><table>
+    <tr><th>Route</th><th>Price</th><th>What lands in the 200 body</th></tr>
+    <tr><td><code>GET /search?q=…</code></td><td class="price">$0.002</td><td>Matching shows — title, author, description, feed URL, artwork, categories, episode count, language, Podcasting 2.0 value block — <b>each with its newest episode</b>, including the enclosure (audio) URL and transcript files</td></tr>
+    <tr><td><code>GET /episode/:id</code></td><td class="price">$0.002</td><td>The full record for one episode: audio URL, byte length, duration, episode/season numbers, artwork, transcripts, GUID, feed context</td></tr>
+    <tr><td><code>GET /</code> · <code>/health</code> · <code>/skill.md</code> · <code>/.well-known/x402</code> · <code>/openapi.json</code></td><td class="price">free</td><td>Discovery, and which data source this deployment is serving</td></tr>
+  </table></div>
+</section>
+
+<section class="wrap">
+  <h2>How a paid call works</h2>
+  <figure>
+  <svg viewBox="0 0 880 250" role="img" aria-label="Flow: the agent requests a resource, the server answers 402 with two payment rails, the agent signs on Base or Solana, the facilitator verifies and settles, and the server returns 200 with the artifact.">
+    <defs>
+      <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/>
+      </marker>
+    </defs>
+    <g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif" text-anchor="middle">
+      <!-- 1. agent -->
+      <rect x="8" y="93" width="118" height="64" rx="10" fill="var(--card)" stroke="var(--border)"/>
+      <text x="67" y="118" font-size="14" font-weight="600" fill="var(--fg)">Agent</text>
+      <text x="67" y="137" font-size="11" fill="var(--muted)">GET /resource</text>
+  
+      <!-- 2. the 402 -->
+      <rect x="166" y="93" width="170" height="64" rx="10" fill="var(--card)" stroke="var(--accent)"/>
+      <text x="251" y="116" font-size="14" font-weight="600" fill="var(--accent)">402 Payment Required</text>
+      <text x="251" y="136" font-size="11" fill="var(--muted)">accepts: [ two rails ]</text>
+  
+      <!-- 3a. EVM rail -->
+      <rect x="376" y="25" width="164" height="58" rx="10" fill="var(--card)" stroke="var(--border)"/>
+      <text x="458" y="47" font-size="13" font-weight="600" fill="var(--fg)">USDC on Base</text>
+      <text x="458" y="65" font-size="11" fill="var(--muted)">EIP-3009 signature</text>
+  
+      <!-- 3b. Solana rail -->
+      <rect x="376" y="167" width="164" height="58" rx="10" fill="var(--card)" stroke="var(--border)"/>
+      <text x="458" y="189" font-size="13" font-weight="600" fill="var(--fg)">USDC on Solana</text>
+      <text x="458" y="207" font-size="11" fill="var(--muted)">signed SPL transfer</text>
+  
+      <text x="458" y="130" font-size="12" font-style="italic" fill="var(--muted)">the client picks</text>
+  
+      <!-- 4. settle -->
+      <rect x="576" y="93" width="170" height="64" rx="10" fill="var(--card)" stroke="var(--border)"/>
+      <text x="661" y="116" font-size="13" font-weight="600" fill="var(--fg)">X-PAYMENT</text>
+      <text x="661" y="136" font-size="11" fill="var(--muted)">facilitator: verify → settle</text>
+  
+      <!-- 5. the goods -->
+      <rect x="786" y="93" width="86" height="64" rx="10" fill="var(--accent)"/>
+      <text x="829" y="118" font-size="14" font-weight="700" fill="#fff">200</text>
+      <text x="829" y="136" font-size="11" fill="#dbe6ff">artifact</text>
+  
+      <g fill="none" stroke="var(--accent)" stroke-width="2" marker-end="url(#ah)">
+        <path d="M126,125 L158,125"/>
+        <path d="M336,116 C356,116 356,54 368,54"/>
+        <path d="M336,134 C356,134 356,196 368,196"/>
+        <path d="M540,54 C556,54 556,116 568,116"/>
+        <path d="M540,196 C556,196 556,134 568,134"/>
+        <path d="M746,125 L778,125"/>
+      </g>
+    </g>
+  </svg>
+    <figcaption>One round trip of overhead. Every 402 quotes both rails; the client signs whichever chain it holds USDC on.</figcaption>
+  </figure>
+</section>
+
+<section class="wrap">
+  <h2>Two rails, one price</h2>
+  <div class="rails">
+    <div class="rail">
+      <b>USDC on Base</b>
+      <div class="k">network <code>base-sepolia</code> / <code>base</code></div>
+      <div class="k">scheme <code>exact</code> · EIP-3009 <code>transferWithAuthorization</code></div>
+      <div class="k">payTo <code>0x40252CFDF8B20Ed757D61ff157719F33Ec332402</code></div>
+    </div>
+    <div class="rail">
+      <b>USDC on Solana</b>
+      <div class="k">network <code>solana</code> / <code>solana-devnet</code></div>
+      <div class="k">scheme <code>exact</code> · SPL <code>transferChecked</code>, fee sponsored</div>
+      <div class="k">payTo <code>WwwuGbqHrwF5RG89KhUbmRWEvjnRH9k5kVM5p7T3WwW</code></div>
+    </div>
+  </div>
+  <p style="margin-top:14px">Both rails appear in the <code>accepts</code> array of every 402. Settlement runs through
+  the <a href="https://x402.org/facilitator">x402 facilitator</a>, and the 200 carries an
+  <code>X-PAYMENT-RESPONSE</code> receipt naming the rail and the transaction.</p>
+</section>
+
+<section class="wrap">
+  <h2>Quickstart</h2>
+  <pre># 1. run it — .env.example already has working defaults, no signup needed
+npm install &amp;&amp; npm run dev              # http://localhost:4021
+
+# 2. search without paying → the dual-rail challenge
+curl -s 'localhost:4021/search?q=linux' | jq '.accepts[] | {network, payTo, maxAmountRequired}'
+# { "network": "base-sepolia", "payTo": "0x40252CF…2402", "maxAmountRequired": "2000" }
+# { "network": "solana",       "payTo": "WwwuGbqH…T3WwW", "maxAmountRequired": "2000" }
+
+# 3. pay → shows, each with its newest episode and audio URL
+const pay = wrapFetchWithPayment(fetch, wallet);
+const res = await pay(`${BASE}/search?q=podcasting%202.0`);
+const { shows } = await res.json();
+
+shows[0].latestEpisode.enclosureUrl
+// "https://op3.dev/e/mp3s.nashownotes.com/PC20-180.mp3"
+shows[0].latestEpisode.transcripts[0].url
+// "https://mp3s.nashownotes.com/PC20-180.srt"   ← read this, don't transcribe the MP3</pre>
+</section>
+
+<section class="wrap">
+  <h2>Why the enclosure URL matters</h2>
+  <p>Most podcast APIs give you titles and descriptions. This one gives you <code>enclosureUrl</code> — the actual MP3 — plus <code>transcripts[]</code>, the Podcasting 2.0 transcript files a feed publishes.</p>
+  <p>That is the difference between “here are some podcasts about X” and a pipeline: search → audio URL → download, or better, search → transcript URL → read. An hour-long episode is a 78 MB download and several minutes of Whisper; its <code>.srt</code> is a few hundred kilobytes and one HTTP GET. When <code>transcripts</code> is non-empty, take it.</p>
+</section>
+
+<section class="wrap">
+  <h2>Live data, honest fixtures</h2>
+  <p>The upstream is the <a href="https://podcastindex.org">Podcast Index</a>, the open catalogue behind Podcasting 2.0. Its keys are free and instant — but they are still keys, so this service is env-gated and says which mode it is in.</p>
+  <div class="tablewrap"><table>
+    <tr><th>credentials</th><th>behaviour</th><th><code>source</code> field</th></tr>
+    <tr><td><code>PODCAST_INDEX_KEY</code> + <code>PODCAST_INDEX_SECRET</code> set</td><td>every call hits the live API at request time</td><td><code>"podcastindex-live"</code></td></tr>
+    <tr><td>unset</td><td>deterministic samples, so the demo runs with zero signups</td><td><code>"fixture"</code></td></tr>
+  </table></div>
+  <p>Fixtures are labelled, never hidden: every paid response carries <code>source</code>, <code>GET /</code> and <code>GET /health</code> report the mode, and the service card lists the fixture episode ids so <code>/episode/:id</code> works without keys. The samples are three real shows with one episode each, filtered by your query, so the shapes match live mode exactly. <b>Never present a fixture response as a real search result.</b></p>
+</section>
+
+<section class="wrap">
+  <h2>Why pay per query</h2>
+  <p>Podcast search is spiky and occasional — an agent researching a topic runs five queries this week and none next month. A free API key is still an account, a secret to store, a rotation policy and a per-deployment signup. x402 charges a fifth of a cent at the moment of the question, from a wallet the agent already has, and the overhead of <i>acquiring the right to ask</i> drops to zero.</p>
+</section>
+
+<footer class="wrap">
+  <p>
+    <a href="https://github.com/nirholas/x402-podcasts">GitHub</a> ·
+    <a href="https://github.com/nirholas/x402-podcasts/blob/main/skill.md">skill.md</a> ·
+    <a href="https://github.com/nirholas/x402-podcasts/blob/main/public/.well-known/x402">.well-known/x402</a> ·
+    <a href="https://github.com/nirholas/x402-podcasts/blob/main/openapi.json">openapi.json</a> ·
+    <a href="https://x402.org">x402 protocol</a>
+  </p>
+  <p>Part of the <a href="https://github.com/nirholas/x402-suite">x402 Suite</a> · Apache-2.0 · <a href="mailto:nichxbt@gmail.com">nichxbt@gmail.com</a></p>
+</footer>
+</body>
+</html>
