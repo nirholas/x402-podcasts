@@ -76,6 +76,34 @@ Those helpers only *build and encode* the payment client-side. Verification and 
 happen server-side through the x402 facilitator, on both rails.
 `accept.extra.feePayer` sponsors the SOL network fee, so an agent holding only USDC can pay.
 
+### Reading the contract before you pay
+
+Every entry in `accepts` carries an `outputSchema` with two halves, so an agent can judge
+whether a call is worth its price and then make it correctly — without fetching the OpenAPI
+document first:
+
+- **`outputSchema.input`** — `{ type: "http", method, queryParams?, pathParams?, bodyType?,
+  bodyFields? }`. Each value is the JSON Schema for that query parameter, path segment or
+  request-body field.
+- **`outputSchema.output`** — the JSON Schema of the 200 body you receive once payment
+  settles.
+
+Both halves are generated from `openapi.json`, so the runtime challenge and the published
+spec cannot drift apart. Both rails advertise the identical contract: which wallet you pay
+with never changes what the endpoint takes or returns.
+
+You can probe a paid route safely: the paywall answers before any validation or existence
+check, so an unpaid request with a synthetic id or an empty body still returns the full
+challenge rather than a 404 or a 400. Read the price and the contract first, decide, then pay.
+
+### Protocol version
+
+This service speaks **x402 v1** (`x402Version: 1`) — the version every client shipped in this
+repo, and in the examples above, is written against. v2 relocates the invocation contract to
+`extensions.bazaar.schema` and identifies networks with CAIP-2 ids; agentcash prefers it, and
+moving is a planned upgrade once the clients here can speak both. Until then, read `accepts[]`
+and ignore `extensions`.
+
 ## 3. What you get
 
 The 200 body **is** the purchase — no job id, no webhook, nothing to poll:

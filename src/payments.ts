@@ -4,7 +4,10 @@
 // `paywall(routePrices)`, that:
 //
 //   1. Answers an unpaid request with `402` + an `accepts` array holding BOTH
-//      rails, so the client picks whichever wallet it has.
+//      rails, so the client picks whichever wallet it has. Each entry also
+//      carries the route's `outputSchema` (input contract + response schema),
+//      so an agent that has never seen this API can decide whether the purchase
+//      is worth it and then call it correctly on the retry.
 //   2. On a retry carrying `X-PAYMENT`, detects the rail from the payload's
 //      `network`, then verifies + settles through that rail's facilitator.
 //   3. Sets `X-PAYMENT-RESPONSE` (base64 JSON settlement receipt: tx hash /
@@ -43,6 +46,44 @@ export interface PaywallOptions {
   baseUrl?: string;
   /** Per-route human description shown in the 402 challenge, keyed like `routePrices`. */
   descriptions?: Record<string, string>;
+  /**
+   * Per-route machine-readable invocation contract, keyed like `routePrices`.
+   * Published as `accepts[].outputSchema` so an agent that receives the 402 can
+   * build a valid request and validate the response without reading any docs.
+   * Generated from `openapi.json` — see `src/schemas.ts`.
+   */
+  schemas?: Record<string, RouteSchema>;
+}
+
+/**
+ * How to call a paid route, in the shape x402 clients and the x402scan /
+ * agentcash discovery crawlers expect at `accepts[].outputSchema.input`.
+ */
+export interface RouteInput {
+  /** Always `"http"` for these services. */
+  type: "http";
+  /** HTTP verb, e.g. `"GET"`. */
+  method: string;
+  /** JSON Schema per query-string parameter. */
+  queryParams?: Record<string, unknown>;
+  /** JSON Schema per path segment parameter (`/check/:domain` → `domain`). */
+  pathParams?: Record<string, unknown>;
+  /** Encoding of the request body, when the route takes one. */
+  bodyType?: "json";
+  /** JSON Schema per top-level request-body field. */
+  bodyFields?: Record<string, unknown>;
+}
+
+/**
+ * The full input/output contract advertised for one paid route. The discovery
+ * spec treats the runtime 402 as authoritative, so both halves are derived from
+ * `openapi.json` and can never disagree with it.
+ */
+export interface RouteSchema {
+  /** How to build the request. */
+  input: RouteInput;
+  /** JSON Schema of the `200` body returned once payment settles. */
+  output: Record<string, unknown>;
 }
 
 /** Settlement receipt attached to the request once payment clears. */
@@ -153,8 +194,12 @@ function buildAccepts(
   price: string,
   resource: string,
   description: string,
+  schema: RouteSchema | undefined,
 ): PaymentRequirements[] {
   const accepts: PaymentRequirements[] = [];
+  // Same contract on every rail — which wallet the buyer uses cannot change
+  // what the endpoint takes or returns.
+  const outputSchema = schema as Record<string, unknown> | undefined;
 
   for (const rail of activeRails()) {
     if (rail.rail === "evm") {
@@ -173,6 +218,7 @@ function buildAccepts(
         payTo: rail.payTo,
         maxTimeoutSeconds: 60,
         asset: priced.asset.address,
+        outputSchema,
         // EIP-3009 domain the wallet needs to build the typed-data signature.
         extra: "eip712" in priced.asset ? priced.asset.eip712 : undefined,
       });
@@ -194,6 +240,7 @@ function buildAccepts(
         payTo: rail.payTo,
         maxTimeoutSeconds: 60,
         asset: priced.asset.address,
+        outputSchema,
         extra: {
           name: "USD Coin",
           decimals: priced.asset.decimals,
@@ -243,7 +290,7 @@ export function paywall(routePrices: RoutePrices, opts: PaywallOptions): Request
     const price = routePrices[key];
 
     const resource = resourceUrl(req, opts.baseUrl ?? process.env.PUBLIC_BASE_URL);
-    const accepts = buildAccepts(price, resource, descriptions[key]);
+    const accepts = buildAccepts(price, resource, descriptions[key], opts.schemas?.[key]);
 
     if (accepts.length === 0) {
       res.status(500).json({

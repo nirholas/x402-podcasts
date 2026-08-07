@@ -39,6 +39,10 @@ and USDC on Solana. Your client picks whichever it can sign.**
 ```
 
 - **Protocol:** x402 v1, scheme `exact` · **Asset:** USDC (6 decimals) on both rails
+- **Invocation contract:** every accept also carries `outputSchema.input` (how to build the
+  request — method, query/path params, JSON body fields) and `outputSchema.output` (the JSON
+  Schema of the 200 body). Both are elided above for readability and both are generated from
+  `openapi.json`, so an agent can plan and call the route from the challenge alone.
 - **Networks:** `base-sepolia` (default) or `base`; `solana` (default) or `solana-devnet`
 - **Facilitators:** `https://x402.org/facilitator` (EVM) and `https://facilitator.payai.network`
   (Solana) — override with `FACILITATOR_URL` / `SOLANA_FACILITATOR_URL`

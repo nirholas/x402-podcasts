@@ -9,6 +9,7 @@ import {
   paymentReceipt,
   type RoutePrices,
 } from "./payments.js";
+import { ROUTE_SCHEMAS } from "./schemas.js";
 import {
   searchShows,
   getEpisode,
@@ -78,7 +79,7 @@ app.get("/openapi.json", (_req, res) => res.sendFile(path.join(ROOT, "openapi.js
 app.use(express.static(path.join(ROOT, "public")));
 
 // ---- paywall: everything below this line costs USDC ----
-app.use(paywall(PAID_ROUTES, { service: "x402-podcasts", descriptions: DESCRIPTIONS }));
+app.use(paywall(PAID_ROUTES, { service: "x402-podcasts", descriptions: DESCRIPTIONS, schemas: ROUTE_SCHEMAS }));
 
 /**
  * GET /search?q=…&max=… — $0.002

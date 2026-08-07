@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>x402-podcasts — podcast search and episode audio URLs, per query</title>
+<meta name="description" content="Search roughly four million podcast feeds through the Podcast Index and resolve any episode down to its enclosure URL — the actual audio file an agent can download and transcribe. $0.002 a call in USDC on Base or Solana.">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="canonical" href="https://nirholas.github.io/x402-podcasts/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="x402-podcasts">
+<meta property="og:title" content="x402-podcasts — podcast search and episode audio URLs, per query">
+<meta property="og:description" content="Search roughly four million podcast feeds through the Podcast Index and resolve any episode down to its enclosure URL — the actual audio file an agent can download and transcribe. $0.002 a call in USDC on Base or Solana.">
+<meta property="og:url" content="https://nirholas.github.io/x402-podcasts/">
+<meta property="og:image" content="https://nirholas.github.io/x402-podcasts/og.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="x402-podcasts — Podcast search down to the audio URL">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="x402-podcasts — podcast search and episode audio URLs, per query">
+<meta name="twitter:description" content="Search roughly four million podcast feeds through the Podcast Index and resolve any episode down to its enclosure URL — the actual audio file an agent can download and transcribe. $0.002 a call in USDC on Base or Solana.">
+<meta name="twitter:image" content="https://nirholas.github.io/x402-podcasts/og.png">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--accent:#0052ff;--sol:#14a37f;--bg:#fff;--fg:#0a0c10;--muted:#57606a;--card:#f6f8fa;--border:#d0d7de;--code-bg:#0d1117;--code-fg:#e6edf3}
+@media (prefers-color-scheme:dark){:root{--bg:#0d1117;--fg:#e6edf3;--muted:#9198a1;--card:#161b22;--border:#30363d}}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--fg);line-height:1.6;-webkit-text-size-adjust:100%}
+.wrap{max-width:820px;margin:0 auto;padding:0 20px}
+header{padding:56px 0 24px;text-align:center}
+.badge{display:inline-block;font-size:13px;font-weight:600;color:var(--accent);border:1px solid var(--accent);border-radius:999px;padding:2px 12px;margin-bottom:14px}
+h1{font-size:38px;letter-spacing:-1px;margin-bottom:10px}
+@media (max-width:560px){h1{font-size:28px}}
+.tagline{font-size:18px;color:var(--muted);max-width:640px;margin:0 auto}
+section{padding:22px 0}
+h2{font-size:22px;margin-bottom:12px;letter-spacing:-.4px}
+p{margin-bottom:12px}
+a{color:var(--accent)}
+code{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-size:13px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+pre{background:var(--code-bg);color:var(--code-fg);border-radius:10px;padding:16px;overflow-x:auto;font-size:13px;line-height:1.55;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+pre code{background:none;border:0;padding:0;color:inherit;font-size:inherit}
+.tablewrap{overflow-x:auto;border:1px solid var(--border);border-radius:12px}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:520px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--border)}
+tr:last-child td{border-bottom:0}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;background:var(--card)}
+td.r{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;white-space:nowrap}
+td.p{font-weight:700;color:var(--accent);white-space:nowrap}
+td.p.free{color:var(--muted);font-weight:600}
+.rails{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+.pill{font-size:11px;font-weight:600;border-radius:999px;padding:2px 9px;border:1px solid var(--border);color:var(--muted)}
+.pill.evm{border-color:var(--accent);color:var(--accent)}
+.pill.sol{border-color:var(--sol);color:var(--sol)}
+footer{padding:32px 0;color:var(--muted);font-size:14px;text-align:center;border-top:1px solid var(--border);margin-top:32px}
+footer a{margin:0 8px;white-space:nowrap}
+</style>
+</head>
+<body>
+
+<header class="wrap">
+  <div class="badge">x402 · USDC on Base + Solana</div>
+  <h1>x402-podcasts</h1>
+  <p class="tagline">Search ~4M feeds and resolve an episode to <b>the enclosure URL — the actual audio file</b>. That is what turns “find me a podcast about X” into something an agent can download and transcribe. <b>$0.002</b> a call.</p>
+  <div class="rails"><span class="pill evm">Base · USDC</span><span class="pill sol">Solana · USDC</span><span class="pill">no account</span><span class="pill">no API key</span></div>
+</header>
+
+<section class="wrap">
+  <h2>Paid routes</h2>
+  <p>An unpaid request returns <code>402</code> with an <code>accepts</code> array carrying both
+  rails and, for each, an <code>outputSchema</code> describing exactly what to send and what
+  comes back — so an agent can decide and then call correctly without reading this page.</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Route</th><th>Price</th><th>Returns</th></tr></thead>
+      <tbody>
+      <tr><td class="r">GET /search</td><td class="p">$0.002</td><td>Matching shows with metadata and each one&#x27;s latest episode</td></tr>
+      <tr><td class="r">GET /episode/:id</td><td class="p">$0.002</td><td>Full episode record including the enclosure (audio) URL</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="wrap">
+  <h2>Free routes</h2>
+  <p>Everything an agent needs to orient itself costs nothing.</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Route</th><th>Price</th><th>Returns</th></tr></thead>
+      <tbody>
+      <tr><td class="r">GET /</td><td class="p free">free</td><td>Service card: rails, prices, doc links</td></tr>
+      <tr><td class="r">GET /health</td><td class="p free">free</td><td>{ ok, uptime }</td></tr>
+      <tr><td class="r">GET /skill.md</td><td class="p free">free</td><td>The agent-facing contract file</td></tr>
+      <tr><td class="r">GET /.well-known/x402</td><td class="p free">free</td><td>Machine-readable resource manifest</td></tr>
+      <tr><td class="r">GET /openapi.json</td><td class="p free">free</td><td>OpenAPI 3.1 document</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="wrap">
+  <h2>Try it</h2>
+  <p>Look at the challenge before paying anything:</p>
+  <pre><code>curl -s &#x27;http://localhost:4028/search?q=lex+fridman&#x27; | jq &#x27;.accepts[0].outputSchema&#x27;</code></pre>
+  <p>Then let a wallet answer it. <code>x402-fetch</code> wraps <code>fetch</code>, catches the
+  402, signs, and retries — the paid body lands in the same call:</p>
+  <pre><code>import { wrapFetchWithPayment } from &quot;x402-fetch&quot;;
+import { privateKeyToAccount } from &quot;viem/accounts&quot;;
+
+const pay = wrapFetchWithPayment(fetch, privateKeyToAccount(process.env.PRIVATE_KEY));
+const res = await pay(&quot;http://localhost:4028/search?q=lex%20fridman&amp;max=5&quot;);
+console.log(await res.json());</code></pre>
+</section>
+
+<footer class="wrap">
+  <a href="/skill.md">skill.md</a> ·
+  <a href="/openapi.json">openapi.json</a> ·
+  <a href="/.well-known/x402">.well-known/x402</a> ·
+  <a href="https://nirholas.github.io/x402-podcasts/">docs</a> ·
+  <a href="https://github.com/nirholas/x402-podcasts">source</a>
+</footer>
+
+</body>
+</html>

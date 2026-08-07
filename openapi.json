@@ -31,6 +31,7 @@
         "operationId": "getServiceCard",
         "summary": "Service card (free)",
         "description": "Prices, rails, and which data source this deployment is currently serving.",
+        "security": [],
         "responses": {
           "200": {
             "description": "Service metadata",
@@ -71,7 +72,8 @@
               }
             }
           }
-        }
+        },
+        "security": []
       }
     },
     "/.well-known/x402": {
@@ -89,7 +91,8 @@
               }
             }
           }
-        }
+        },
+        "security": []
       }
     },
     "/skill.md": {
@@ -107,7 +110,8 @@
               }
             }
           }
-        }
+        },
+        "security": []
       }
     },
     "/search": {
