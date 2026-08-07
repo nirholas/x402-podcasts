@@ -20,7 +20,7 @@ import {
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
-const PORT = Number(process.env.PORT || 4021);
+const PORT = Number(process.env.PORT || 4028);
 
 const PAID_ROUTES: RoutePrices = {
   "GET /search": "$0.002",

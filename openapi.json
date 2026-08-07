@@ -8,7 +8,7 @@
     "contact": { "name": "nirholas", "email": "nichxbt@gmail.com" },
     "license": { "name": "Apache-2.0", "identifier": "Apache-2.0" }
   },
-  "servers": [{ "url": "http://localhost:4021", "description": "local self-host" }],
+  "servers": [{ "url": "http://localhost:4028", "description": "local self-host" }],
   "externalDocs": {
     "description": "Docs and tutorial",
     "url": "https://nirholas.github.io/x402-podcasts/"
@@ -166,7 +166,7 @@
                   "scheme": "exact",
                   "network": "base-sepolia",
                   "maxAmountRequired": "2000",
-                  "resource": "http://localhost:4021/search",
+                  "resource": "http://localhost:4028/search",
                   "description": "Podcast search: matching shows with metadata and each one's latest episode",
                   "mimeType": "application/json",
                   "payTo": "0x40252CFDF8B20Ed757D61ff157719F33Ec332402",
@@ -178,7 +178,7 @@
                   "scheme": "exact",
                   "network": "solana",
                   "maxAmountRequired": "2000",
-                  "resource": "http://localhost:4021/search",
+                  "resource": "http://localhost:4028/search",
                   "description": "Podcast search: matching shows with metadata and each one's latest episode",
                   "mimeType": "application/json",
                   "payTo": "WwwuGbqHrwF5RG89KhUbmRWEvjnRH9k5kVM5p7T3WwW",

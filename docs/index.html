@@ -155,10 +155,10 @@ a{color:var(--accent)}
 <section class="wrap">
   <h2>Quickstart</h2>
   <pre># 1. run it — .env.example already has working defaults, no signup needed
-npm install &amp;&amp; npm run dev              # http://localhost:4021
+npm install &amp;&amp; npm run dev              # http://localhost:4028
 
 # 2. search without paying → the dual-rail challenge
-curl -s 'localhost:4021/search?q=linux' | jq '.accepts[] | {network, payTo, maxAmountRequired}'
+curl -s 'localhost:4028/search?q=linux' | jq '.accepts[] | {network, payTo, maxAmountRequired}'
 # { "network": "base-sepolia", "payTo": "0x40252CF…2402", "maxAmountRequired": "2000" }
 # { "network": "solana",       "payTo": "WwwuGbqH…T3WwW", "maxAmountRequired": "2000" }
 

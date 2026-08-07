@@ -22,7 +22,7 @@ import { baseSepolia } from "viem/chains";
 import { wrapFetchWithPayment } from "x402-fetch";
 import { z } from "zod";
 
-const BASE_URL = process.env.X402_PODCASTS_URL ?? "http://localhost:4021";
+const BASE_URL = process.env.X402_PODCASTS_URL ?? "http://localhost:4028";
 
 // One wallet, reused for every purchase. Its balance IS the spending cap.
 const account = privateKeyToAccount(process.env.PRIVATE_KEY as `0x${string}`);

@@ -31,7 +31,7 @@ SOLANA_PAY_TO_ADDRESS=WwwuGbqHrwF5RG89KhUbmRWEvjnRH9k5kVM5p7T3WwW
 Change both to your own addresses if you want the money. Everything else is commented out
 with sane defaults: `base-sepolia` for the EVM rail, `solana` mainnet for Solana,
 `https://x402.org/facilitator` for EVM settlement, `https://facilitator.payai.network` for
-Solana settlement, port `4021`.
+Solana settlement, port `4028`.
 
 Podcast Index credentials are optional for now — step 8 turns them on.
 
@@ -42,7 +42,7 @@ npm run dev
 ```
 
 ```
-x402-podcasts listening on http://localhost:4021
+x402-podcasts listening on http://localhost:4028
 Payment rails (USDC — the client picks):
   evm     base-sepolia   → 0x40252CFDF8B20Ed757D61ff157719F33Ec332402  via https://x402.org/facilitator
   solana  solana         → WwwuGbqHrwF5RG89KhUbmRWEvjnRH9k5kVM5p7T3WwW  via https://facilitator.payai.network
@@ -57,7 +57,7 @@ Free routes: GET /  GET /health  GET /skill.md  GET /.well-known/x402  GET /open
 Check the free routes, and note what the service card says about its data:
 
 ```bash
-curl -s localhost:4021/ | jq .dataSource
+curl -s localhost:4028/ | jq .dataSource
 ```
 
 ```json
@@ -72,7 +72,7 @@ curl -s localhost:4021/ | jq .dataSource
 ## 4. Your first 402
 
 ```bash
-curl -i -s 'localhost:4021/search?q=podcasting%202.0'
+curl -i -s 'localhost:4028/search?q=podcasting%202.0'
 ```
 
 ```jsonc
@@ -166,7 +166,7 @@ PODCAST_INDEX_SECRET=your-secret
 3. Restart, and confirm:
 
 ```bash
-curl -s localhost:4021/health | jq .source
+curl -s localhost:4028/health | jq .source
 # "podcastindex-live"
 ```
 
@@ -180,7 +180,7 @@ deployment — clients only ever see x402.
 ## 9. One episode in full
 
 ```bash
-curl -s localhost:4021/episode/16795090960 -H "X-PAYMENT: $PAID" | jq .episode
+curl -s localhost:4028/episode/16795090960 -H "X-PAYMENT: $PAID" | jq .episode
 ```
 
 Use this when you have an `episodeId` from a search and want the complete record — byte

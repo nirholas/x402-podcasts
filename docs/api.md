@@ -1,6 +1,6 @@
 # API reference
 
-Base URL: `http://localhost:4021` when self-hosting. Machine-readable equivalents:
+Base URL: `http://localhost:4028` when self-hosting. Machine-readable equivalents:
 [`openapi.json`](https://github.com/nirholas/x402-podcasts/blob/main/openapi.json) and
 [`/.well-known/x402`](https://github.com/nirholas/x402-podcasts/blob/main/public/.well-known/x402).
 
@@ -76,7 +76,7 @@ Every paid response carries a `source` field. Read it before you trust the data 
 ### Example
 
 ```bash
-curl -s 'localhost:4021/search?q=podcasting%202.0&max=2' -H "X-PAYMENT: $PAID" | jq
+curl -s 'localhost:4028/search?q=podcasting%202.0&max=2' -H "X-PAYMENT: $PAID" | jq
 ```
 
 ```json
@@ -122,7 +122,7 @@ curl -s 'localhost:4021/search?q=podcasting%202.0&max=2' -H "X-PAYMENT: $PAID" |
     "payer": "0xYourWallet",
     "amount": "2000",
     "asset": "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
-    "resource": "http://localhost:4021/search"
+    "resource": "http://localhost:4028/search"
   }
 }
 ```
@@ -251,7 +251,7 @@ only ever see x402.
 | `scheme` | `"exact"` | the only scheme accepted |
 | `network` | `"base-sepolia"` / `"solana"` | switched by `NETWORK` and `SOLANA_NETWORK` |
 | `maxAmountRequired` | `"2000"` | base units; USDC has 6 decimals, so this is $0.002 |
-| `resource` | `"http://localhost:4021/search"` | absolute URL, path only — the query string does not affect price |
+| `resource` | `"http://localhost:4028/search"` | absolute URL, path only — the query string does not affect price |
 | `description` | `"Podcast search: matching shows…"` | shown by wallets and the checkout modal |
 | `mimeType` | `"application/json"` | what the 200 will be |
 | `payTo` | `0x40252CF…` / `WwwuGbqH…` | receive address for that rail |
@@ -272,7 +272,7 @@ Paid responses set `X-PAYMENT-RESPONSE` to base64 JSON and repeat it inline as `
   "payer": "…",
   "amount": "2000",
   "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-  "resource": "http://localhost:4021/search"
+  "resource": "http://localhost:4028/search"
 }
 ```
 

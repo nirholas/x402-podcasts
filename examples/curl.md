@@ -3,14 +3,14 @@
 No SDK — just HTTP, so you can see exactly what the protocol does.
 
 ```bash
-npm install && npm run dev     # http://localhost:4021
+npm install && npm run dev     # http://localhost:4028
 ```
 
 ## 0. Discover the service for free
 
 ```bash
-curl -s localhost:4021/ | jq '{name, dataSource, endpoints}'
-curl -s localhost:4021/.well-known/x402 | jq '.resources[] | {resource, price}'
+curl -s localhost:4028/ | jq '{name, dataSource, endpoints}'
+curl -s localhost:4028/.well-known/x402 | jq '.resources[] | {resource, price}'
 ```
 
 ```
@@ -33,7 +33,7 @@ spend anything:
 ## 1. Search without paying → 402 with **both** rails
 
 ```bash
-curl -i -s 'localhost:4021/search?q=podcasting%202.0'
+curl -i -s 'localhost:4028/search?q=podcasting%202.0'
 ```
 
 ```http
@@ -50,7 +50,7 @@ Content-Type: application/json
       "scheme": "exact",
       "network": "base-sepolia",
       "maxAmountRequired": "2000",              // 2000 base units = $0.002 USDC (6 dp)
-      "resource": "http://localhost:4021/search",
+      "resource": "http://localhost:4028/search",
       "description": "Podcast search: matching shows with metadata and each one's latest episode",
       "mimeType": "application/json",
       "payTo": "0x40252CFDF8B20Ed757D61ff157719F33Ec332402",
@@ -62,7 +62,7 @@ Content-Type: application/json
       "scheme": "exact",
       "network": "solana",
       "maxAmountRequired": "2000",
-      "resource": "http://localhost:4021/search",
+      "resource": "http://localhost:4028/search",
       "description": "Podcast search: matching shows with metadata and each one's latest episode",
       "mimeType": "application/json",
       "payTo": "WwwuGbqHrwF5RG89KhUbmRWEvjnRH9k5kVM5p7T3WwW",
@@ -77,7 +77,7 @@ Content-Type: application/json
 Just the rails:
 
 ```bash
-curl -s 'localhost:4021/search?q=linux' | jq '.accepts[] | {network, asset, payTo, maxAmountRequired}'
+curl -s 'localhost:4028/search?q=linux' | jq '.accepts[] | {network, asset, payTo, maxAmountRequired}'
 ```
 
 Note `resource` is the path without the query string — the price does not depend on what you
@@ -128,7 +128,7 @@ PRIVATE_KEY=0xyourTestnetKey npm run client
 ## 3. Retry with the header → 200 + the artifact
 
 ```bash
-curl -i -s 'localhost:4021/search?q=podcasting%202.0&max=2' -H "X-PAYMENT: $X_PAYMENT"
+curl -i -s 'localhost:4028/search?q=podcasting%202.0&max=2' -H "X-PAYMENT: $X_PAYMENT"
 ```
 
 ```http
@@ -171,13 +171,13 @@ Decode the receipt header:
 echo "$RESPONSE_HEADER" | base64 -d | jq
 # { "success": true, "rail": "evm", "network": "base-sepolia",
 #   "transaction": "0xabc…", "payer": "0xYourWallet", "amount": "2000",
-#   "asset": "0x036CbD…", "resource": "http://localhost:4021/search" }
+#   "asset": "0x036CbD…", "resource": "http://localhost:4028/search" }
 ```
 
 ## 4. One episode in full
 
 ```bash
-curl -s localhost:4021/episode/16795090960 -H "X-PAYMENT: $X_PAYMENT_2" | jq .episode
+curl -s localhost:4028/episode/16795090960 -H "X-PAYMENT: $X_PAYMENT_2" | jq .episode
 ```
 
 ```json
@@ -208,7 +208,7 @@ curl -sL -o episode.mp3 "$(jq -r .episode.enclosureUrl < episode.json)"
 Without credentials the server still answers, from deterministic samples:
 
 ```bash
-curl -s 'localhost:4021/search?q=linux' -H "X-PAYMENT: $X_PAYMENT" | jq '{source, count}'
+curl -s 'localhost:4028/search?q=linux' -H "X-PAYMENT: $X_PAYMENT" | jq '{source, count}'
 # { "source": "fixture", "count": 1 }
 ```
 
@@ -219,7 +219,7 @@ Turn on live data:
 export PODCAST_INDEX_KEY=...
 export PODCAST_INDEX_SECRET=...
 npm run dev
-curl -s localhost:4021/health | jq .source     # "podcastindex-live"
+curl -s localhost:4028/health | jq .source     # "podcastindex-live"
 ```
 
 ## Errors you may hit

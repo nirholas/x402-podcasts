@@ -12,7 +12,7 @@ import { privateKeyToAccount } from "viem/accounts";
 import { base, baseSepolia } from "viem/chains";
 import { wrapFetchWithPayment, decodeXPaymentResponse } from "x402-fetch";
 
-const BASE_URL = process.env.BASE_URL ?? "http://localhost:4021";
+const BASE_URL = process.env.BASE_URL ?? "http://localhost:4028";
 const QUERY = process.env.Q ?? "podcasting 2.0";
 const PRIVATE_KEY = process.env.PRIVATE_KEY as `0x${string}` | undefined;
 
@@ -122,7 +122,7 @@ main().catch((err) => {
  * ---------------------------------------------------------------------------
  * The raw dual-rail 402, for reference
  * ---------------------------------------------------------------------------
- *   $ curl -s 'localhost:4021/search?q=linux' | jq '.accepts[] | {network, payTo, maxAmountRequired}'
+ *   $ curl -s 'localhost:4028/search?q=linux' | jq '.accepts[] | {network, payTo, maxAmountRequired}'
  *   { "network": "base-sepolia", "payTo": "0x40252CFDF8B20Ed757D61ff157719F33Ec332402", "maxAmountRequired": "2000" }
  *   { "network": "solana",       "payTo": "WwwuGbqHrwF5RG89KhUbmRWEvjnRH9k5kVM5p7T3WwW", "maxAmountRequired": "2000" }
  */

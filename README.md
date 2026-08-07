@@ -50,13 +50,13 @@ git clone https://github.com/nirholas/x402-podcasts.git
 cd x402-podcasts
 npm install
 cp .env.example .env      # already filled with working defaults
-npm run dev               # http://localhost:4021
+npm run dev               # http://localhost:4028
 ```
 
 Ask without paying and you get the dual-rail challenge:
 
 ```bash
-curl -i -s 'localhost:4021/search?q=podcasting%202.0'
+curl -i -s 'localhost:4028/search?q=podcasting%202.0'
 # HTTP/1.1 402 Payment Required
 # { "x402Version": 1, "accepts": [ {…base-sepolia…}, {…solana…} ] }
 ```

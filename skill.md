@@ -7,7 +7,7 @@ show metadata with each show's newest episode, or the full record for one episod
 agent, because it turns "find me a podcast about X" into a URL you can download and
 transcribe.
 
-- **Base URL:** `http://localhost:4021` (self-host) — replace with your deployment's origin.
+- **Base URL:** `http://localhost:4028` (self-host) — replace with your deployment's origin.
 - **Manifest:** `GET /.well-known/x402`
 - **OpenAPI:** `GET /openapi.json`
 - **Contact:** nichxbt@gmail.com
@@ -26,12 +26,12 @@ and USDC on Solana. Your client picks whichever it can sign.**
     { "scheme": "exact", "network": "base-sepolia", "maxAmountRequired": "2000",
       "asset": "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
       "payTo": "0x40252CFDF8B20Ed757D61ff157719F33Ec332402",
-      "resource": "http://localhost:4021/search", "mimeType": "application/json",
+      "resource": "http://localhost:4028/search", "mimeType": "application/json",
       "maxTimeoutSeconds": 60, "extra": { "name": "USDC", "version": "2" } },
     { "scheme": "exact", "network": "solana", "maxAmountRequired": "2000",
       "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
       "payTo": "WwwuGbqHrwF5RG89KhUbmRWEvjnRH9k5kVM5p7T3WwW",
-      "resource": "http://localhost:4021/search", "mimeType": "application/json",
+      "resource": "http://localhost:4028/search", "mimeType": "application/json",
       "maxTimeoutSeconds": 60,
       "extra": { "name": "USD Coin", "decimals": 6, "feePayer": "2wKupLR9q6wXYppw8Gr2NvWxKBUqm4PPJKkQfoxHDBg4" } }
   ]
