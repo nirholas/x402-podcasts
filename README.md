@@ -149,3 +149,7 @@ Part of the [x402 Suite](https://github.com/nirholas/x402-suite).
 
 Apache-2.0 — see [LICENSE](LICENSE). Podcast data is served by the Podcast Index under its
 own terms; this repo does not redistribute their catalogue.
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=nirholas/x402-podcasts&type=Date)](https://www.star-history.com/#nirholas/x402-podcasts&Date)
