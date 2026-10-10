@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: If you use this software, please cite it as below.
+title: "x402-podcasts"
+abstract: "Podcast search and episode intel over the Podcast Index API, per query. Pay in USDC on Base or Solana via x402."
+license: Apache-2.0
+repository-code: "https://github.com/nirholas/x402-podcasts"
+url: "https://three.ws"
+authors:
+  - name: three.ws
+    website: "https://three.ws"

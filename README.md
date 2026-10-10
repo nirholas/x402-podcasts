@@ -153,3 +153,26 @@ own terms; this repo does not redistribute their catalogue.
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=nirholas/x402-podcasts&type=Date)](https://www.star-history.com/#nirholas/x402-podcasts&Date)
+
+<!-- three.ws:growth -->
+## Support the project
+
+If x402-podcasts saves you time, **[star it on GitHub](https://github.com/nirholas/x402-podcasts)**. Stars are how other developers and AI agents find the repositories worth trusting, and they cost you one click.
+
+Know someone who would use it? [Post on X](https://twitter.com/intent/tweet?text=x402-podcasts%3A%20Podcast%20search%20and%20episode%20intel%20over%20the%20Podcast%20Index%20API%2C%20per%20query&url=https%3A%2F%2Fgithub.com%2Fnirholas%2Fx402-podcasts) · [Share on Bluesky](https://bsky.app/intent/compose?text=x402-podcasts%3A%20Podcast%20search%20and%20episode%20intel%20over%20the%20Podcast%20Index%20API%2C%20per%20query%20https%3A%2F%2Fgithub.com%2Fnirholas%2Fx402-podcasts) · [Share on LinkedIn](https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fgithub.com%2Fnirholas%2Fx402-podcasts) · [Submit to Hacker News](https://news.ycombinator.com/submitlink?u=https%3A%2F%2Fgithub.com%2Fnirholas%2Fx402-podcasts&t=x402-podcasts%3A%20Podcast%20search%20and%20episode%20intel%20over%20the%20Podcast%20Index%20API%2C%20per%20query) · [Share on Reddit](https://www.reddit.com/submit?url=https%3A%2F%2Fgithub.com%2Fnirholas%2Fx402-podcasts&title=x402-podcasts%3A%20Podcast%20search%20and%20episode%20intel%20over%20the%20Podcast%20Index%20API%2C%20per%20query)
+
+## Built for AI agents too
+
+Coding agents and LLM tooling can read this repo directly: [AGENTS.md](./AGENTS.md), [llms.txt](./llms.txt), [llms-full.txt](./llms-full.txt). Point an agent at `https://github.com/nirholas/x402-podcasts` and it has the context it needs.
+
+## More from the same author
+
+- [All repositories by nirholas](https://github.com/nirholas/nirholas#readme): the full catalog, grouped by topic
+- [three.ws](https://three.ws): the platform for 3D AI agents with Solana wallets, a skill marketplace and x402 payments
+- Questions or ideas: [open an issue](https://github.com/nirholas/x402-podcasts/issues) or [start a discussion](https://github.com/nirholas/x402-podcasts/discussions)
+
+## Contributors
+
+[![Contributors](https://contrib.rocks/image?repo=nirholas/x402-podcasts)](https://github.com/nirholas/x402-podcasts/graphs/contributors)
+
+<!-- /three.ws:growth -->
