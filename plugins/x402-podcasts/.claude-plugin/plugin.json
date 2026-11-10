@@ -1,0 +1,18 @@
+{
+  "name": "x402-podcasts",
+  "version": "0.1.0",
+  "description": "Run the x402-podcasts service and search podcasts and fetch episode details from the Podcast Index API, paid per query via x402.",
+  "author": {
+    "name": "nirholas"
+  },
+  "repository": "https://github.com/nirholas/x402-podcasts",
+  "homepage": "https://nirholas.github.io/x402-podcasts/",
+  "license": "Apache-2.0",
+  "keywords": [
+    "x402",
+    "podcasts",
+    "podcast-index",
+    "usdc",
+    "search"
+  ]
+}

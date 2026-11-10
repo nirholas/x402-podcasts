@@ -1,0 +1,22 @@
+{
+  "name": "x402-podcasts",
+  "owner": {
+    "name": "nirholas"
+  },
+  "description": "Run the x402-podcasts service and search podcasts and fetch episode details from the Podcast Index API, paid per query via x402.",
+  "plugins": [
+    {
+      "name": "x402-podcasts",
+      "source": "./plugins/x402-podcasts",
+      "description": "Run the x402-podcasts service and search podcasts and fetch episode details from the Podcast Index API, paid per query via x402.",
+      "category": "data",
+      "tags": [
+        "x402",
+        "podcasts",
+        "podcast-index",
+        "usdc",
+        "search"
+      ]
+    }
+  ]
+}
